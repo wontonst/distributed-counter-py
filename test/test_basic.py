@@ -9,7 +9,8 @@ from distributed_counter import DistributedCounter
 
 class TestDistributedCounter(unittest.TestCase):
     def setUp(self):
-        self.counter = DistributedCounter(str(uuid.uuid1()), debug=True, region_name='us-west-1',
+        self.counter = DistributedCounter(str(uuid.uuid1()), endpoint_url='http://127.0.0.1:8001',
+                                          region_name='us-west-1',
                                           aws_access_key_id='somekey', aws_secret_access_key='somesecret')
         self.counter.create_table()
 
@@ -22,7 +23,7 @@ class TestDistributedCounter(unittest.TestCase):
         self.assertEqual(self.counter.get('test'), 3)
 
     def test_table_dne(self):
-        counter = DistributedCounter('nonexistanttable', debug=True, region_name='us-west-1',
+        counter = DistributedCounter('nonexistanttable', endpoint_url='http://127.0.0.1:8001', region_name='us-west-1',
                                      aws_access_key_id='somekey', aws_secret_access_key='somesecret')
         with self.assertRaises(ClientError):
             counter.get('somekey')
