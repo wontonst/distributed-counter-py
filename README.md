@@ -29,12 +29,17 @@ from distributed_counter import DistributedCounter
 counter = DistributedCounter('my_dynamo_table_name')
 ```
 
-You can pass anything kwargs to DistributedCounter and they will be propagated to the boto3 Session, e.g.
+You can pass anything in `kwargs` to DistributedCounter and they will be propagated to the boto3 Session, e.g.
 
 ```
 counter = DistributedCounter('mytable', region_name='us-west-1', aws_access_key_id='somekey',
                              aws_secret_access_key='somesecret')
 ```
+
+There are also special parameters `config` and `endpoint_url` which get passed to the
+DynamoDB ServiceResource. 
+
+## Table Creation
 
 The dynamodb table has one HASH key called `key`. You can create the table yourself, or you can use `create_table`.
 
@@ -44,6 +49,8 @@ counter.create_table()
 
 `distributed_counter` is smart enough to wait for the table to finish creation on your next call to the table.
 
+## Getting/Setting
+
 Next, you can set a key using `put` and get it with `get`:
 
 ```
@@ -51,6 +58,8 @@ counter.put('mykey', 0)
 counter.get('mykey')
 0
 ```
+
+## Increment/Decrementing
 
 Finally, you can `increment`/`decrement`.
 
@@ -89,3 +98,6 @@ if not counter.increment('mykey', 1) % 100:
 ```
 
 This guarantees that no matter how many servers you have, every 100 calls to your API will run your function.
+
+The modulo is used instead of `==` because there is a corner case where hypothetically you could increment to 200 before
+the decrement finishes.

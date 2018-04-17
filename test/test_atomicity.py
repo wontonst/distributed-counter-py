@@ -11,8 +11,8 @@ ITERATIONS_PER_THREAD = 150
 
 
 def _thread(val):
-    counter = DistributedCounter(TABLE_NAME, debug=True, region_name='us-west-1', aws_access_key_id='somekey',
-                                 aws_secret_access_key='somesecret')
+    counter = DistributedCounter(TABLE_NAME, endpoint_url='http://127.0.0.1:8001', region_name='us-west-1',
+                                 aws_access_key_id='somekey', aws_secret_access_key='somesecret')
     for _ in range(ITERATIONS_PER_THREAD):
         result = counter.increment(KEY_NAME, 1)
         if result == 100:
@@ -27,8 +27,8 @@ def test_thread_safety():
     When it hits 100, decrement by 100 and add to the thread's own counter. Validate the sum of these counters,
     make sure decrement worked.
     """
-    counter = DistributedCounter(TABLE_NAME, debug=True, region_name='us-west-1', aws_access_key_id='somekey',
-                                 aws_secret_access_key='somesecret')
+    counter = DistributedCounter(TABLE_NAME, endpoint_url='http://127.0.0.1:8001', region_name='us-west-1',
+                                 aws_access_key_id='somekey', aws_secret_access_key='somesecret')
     counter.create_table()
     counter.put(KEY_NAME, 0)
     pool = Pool(NUM_THREADS)

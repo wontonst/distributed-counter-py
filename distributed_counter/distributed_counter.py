@@ -16,16 +16,10 @@ class DistributedCounter(object):
     available - boolean on whether or not the table is immediately available.
         Set to False when the user creates the table.
     """
-    def __init__(self, table_name, *args, **kwargs):
+    def __init__(self, table_name, config=None, endpoint_url=None, *args, **kwargs):
         self.table_name = table_name
-        debug = kwargs.get('debug', False)
-        if 'debug' in kwargs:
-            kwargs.pop('debug')
         self.session = boto3.session.Session(*args, **kwargs)
-        if debug:  # used in unittest or for interacting with local dynamodb
-            self.dynamodb = self.session.resource('dynamodb', endpoint_url='http://127.0.0.1:8001')
-        else:
-            self.dynamodb = self.session.resource('dynamodb')
+        self.dynamodb = self.session.resource('dynamodb', endpoint_url=endpoint_url, config=config)
         self.table = self.dynamodb.Table(self.table_name)
         self.available = True
 
