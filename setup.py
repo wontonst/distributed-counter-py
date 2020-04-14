@@ -8,7 +8,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='distributed_counter',
-    version='0.0.2',
+    version='0.0.3',
     description='distributed increment/decrement counter leveraging dynamodb',
     long_description=long_description,
     long_description_content_type='text/markdown',
